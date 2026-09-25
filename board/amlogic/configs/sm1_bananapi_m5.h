@@ -141,6 +141,13 @@
                 "run init_display; run storeargs; run update;"\
             "else fi;"\
             "\0"\
+        "upgrade_adc_key="\
+            "saradc open 2; saradc getval; "\
+            "if saradc get_in_range 0x0 0x50; then "\
+                "echo update by adc key; "\
+                "run update; "\
+            "fi;"\
+            "\0"\
         "storeargs="\
             "get_bootloaderversion;" \
             "setenv bootargs ${initargs} ${fs_type} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} vout=${outputmode},enable panel_type=${panel_type} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
@@ -275,6 +282,7 @@
             "else "\
                 "setenv reboot_mode_android ""normal"";"\
                 "run storeargs;"\
+                "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output ${outputmode};vpp hdrpkt;"\
             "fi;fi;"\
             "\0"\
         "cmdline_keys="\
@@ -297,6 +305,10 @@
                 "else "\
                     "setenv bootargs ${bootargs} androidboot.wificountrycode=US;"\
                 "fi;"\
+                "if keyman read dtbo ${loadaddr} str; then "\
+                    "setenv bootargs ${bootargs} androidboot.dtbo_idx=${dtbo};"\
+                    "setenv androidboot.dtbo_idx ${dtbo};"\
+                "fi;"\
             "fi;"\
             "\0"\
         "bcb_cmd="\
@@ -307,6 +319,13 @@
             "if gpio input GPIOAO_3; then "\
                 "echo detect upgrade key; run update;"\
             "fi;"\
+            "\0"\
+        "wifi_module_check="\
+            "if gpio input GPIOX_6; then "\
+                "echo M5: no wifi; keyman write dtbo str 0; "\
+            "else "\
+                "echo M5: has wifi; keyman write dtbo str 1; "\
+            "fi;fi;"\
             "\0"\
 	"irremote_update="\
 		"if irkey 2500000 0xe31cfb04 0xb748fb04; then "\
@@ -323,7 +342,9 @@
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
             "run upgrade_check;"\
+            "run upgrade_adc_key;"\
             "run init_display;"\
+            "run wifi_module_check;"\
             "run storeargs;"\
             "forceupdate;" \
             "bcb uboot-command;"\
@@ -597,8 +618,8 @@
 
 /* Choose One of Ethernet Type */
 #undef CONFIG_ETHERNET_NONE
-#define ETHERNET_INTERNAL_PHY
-#undef ETHERNET_EXTERNAL_PHY
+#define ETHERNET_EXTERNAL_PHY
+#undef ETHERNET_INTERNAL_PHY
 
 #if 0
 #define CONFIG_CMD_AML_MTEST 1
