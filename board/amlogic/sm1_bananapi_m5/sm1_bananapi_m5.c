@@ -549,26 +549,27 @@ int usb_get_update_result(void)
 
 phys_size_t get_effective_memsize(void)
 {
-	// >>16 -> MB, <<20 -> real size, so >>16<<20 = <<4
+	phys_size_t ddr_size = (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4);
+
+	if (ddr_size > 0xE0000000UL)
+		ddr_size = 0xE0000000UL;
+
 #if defined(CONFIG_SYS_MEM_TOP_HIDE)
-	return (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4) - CONFIG_SYS_MEM_TOP_HIDE;
-#else
-	return (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4);
+	ddr_size -= CONFIG_SYS_MEM_TOP_HIDE;
 #endif
+
+	return ddr_size;
 }
 
 #ifdef CONFIG_MULTI_DTB
 int checkhw(char * name)
 {
-	/*
-	 * set aml_dt according to chip and dram capacity
-	 */
-	unsigned int ddr_size=0;
+	phys_size_t ddr_size = 0;
 	char loc_name[64] = {0};
 	int i;
-	cpu_id_t cpu_id=get_cpu_id();
+	cpu_id_t cpu_id = get_cpu_id();
 
-	for (i=0; i<CONFIG_NR_DRAM_BANKS; i++) {
+	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
 		ddr_size += gd->bd->bi_dram[i].size;
 	}
 #if defined(CONFIG_SYS_MEM_TOP_HIDE)
@@ -576,14 +577,17 @@ int checkhw(char * name)
 #endif
 	if (MESON_CPU_MAJOR_ID_SM1 == cpu_id.family_id) {
 		switch (ddr_size) {
-			case 0x80000000:
-				strcpy(loc_name, "sm1_ac200_2g\0");
+			case 0xE0000000UL:
+				strcpy(loc_name, "sm1_bananapi_m5");
 				break;
-			case 0x40000000:
-				strcpy(loc_name, "sm1_ac200_1g\0");
+			case 0x80000000UL:
+				strcpy(loc_name, "sm1_ac200_2g");
 				break;
-			case 0x2000000:
-				strcpy(loc_name, "sm1_ac200_512m\0");
+			case 0x40000000UL:
+				strcpy(loc_name, "sm1_ac200_1g");
+				break;
+			case 0x20000000UL:
+				strcpy(loc_name, "sm1_ac200_512m");
 				break;
 			default:
 				strcpy(loc_name, "sm1_ac200_unsupport");
@@ -592,37 +596,52 @@ int checkhw(char * name)
 	}
 	else {
 		switch (ddr_size) {
-			case 0x80000000:
-				strcpy(loc_name, "g12a_u200_2g\0");
+			case 0xE0000000UL:
+				strcpy(loc_name, "g12a_u200_4g");
 				break;
-			case 0x40000000:
-				strcpy(loc_name, "g12a_u200_1g\0");
+			case 0x80000000UL:
+				strcpy(loc_name, "g12a_u200_2g");
 				break;
-			case 0x2000000:
-				strcpy(loc_name, "g12a_u200_512m\0");
+			case 0x40000000UL:
+				strcpy(loc_name, "g12a_u200_1g");
+				break;
+			case 0x20000000UL:
+				strcpy(loc_name, "g12a_u200_512m");
 				break;
 			default:
 				strcpy(loc_name, "g12a_u200_unsupport");
 				break;
 		}
 	}
+
 	strcpy(name, loc_name);
 	env_set("aml_dt", loc_name);
 	return 0;
 }
 #endif
 
+const char * const _env_args_reserve_[] =
+{
+		"aml_dt",
+		"firstboot",
+		"lock",
+		"upgrade_step",
+		"bootloader_version",
+
+		NULL // Keep NULL be last to tell END
+};
+
 static struct mm_region bd_mem_map[] = {
 	{
 		.virt = 0x0UL,
 		.phys = 0x0UL,
-		.size = 0x80000000UL,
+		.size = 0xE0000000UL,
 		.attrs = PTE_BLOCK_MEMTYPE(MT_NORMAL) |
 			 PTE_BLOCK_INNER_SHARE
 	}, {
-		.virt = 0x80000000UL,
-		.phys = 0x80000000UL,
-		.size = 0x80000000UL,
+		.virt = 0xE0000000UL,
+		.phys = 0xE0000000UL,
+		.size = 0x20000000UL,
 		.attrs = PTE_BLOCK_MEMTYPE(MT_DEVICE_NGNRNE) |
 			 PTE_BLOCK_NON_SHARE |
 			 PTE_BLOCK_PXN | PTE_BLOCK_UXN
