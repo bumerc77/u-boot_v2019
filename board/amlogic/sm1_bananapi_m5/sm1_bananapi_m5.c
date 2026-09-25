@@ -523,6 +523,29 @@ int board_late_init(void)
 		env_set("cpu_id", "1234567890");
 	}
 
+	/* BPI-M5 power on USB3-HUB */
+	unsigned int val;
+
+	val = readl(PREG_PAD_GPIO3_EN_N);
+	val &= ~(1 << 6);
+	writel(val, PREG_PAD_GPIO3_EN_N);
+	printf("usb: GPIOH_6 usb power-on\n");
+
+	val = readl(PERIPHS_PIN_MUX_B);
+	val &= ~(0xf << 24);
+	writel(val, PERIPHS_PIN_MUX_B);
+
+	udelay(100);
+
+	val = readl(PREG_PAD_GPIO3_EN_N);
+	val &= ~(1 << 4);
+	writel(val, PREG_PAD_GPIO3_EN_N);
+	printf("usb: GPIOH_4 usb reset\n");
+
+	val = readl(PERIPHS_PIN_MUX_B);
+	val &= ~(0xf << 16);
+	writel(val, PERIPHS_PIN_MUX_B);
+
 	return 0;
 }
 #endif
