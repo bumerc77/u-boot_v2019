@@ -1740,6 +1740,9 @@ config TARGET_G12A_U211_V1
 config TARGET_SM1_AC200_V1
 	bool "SM1_AC200_V1"
 
+config TARGET_SM1_BANANAPI_M5
+	bool "SM1_BANANAPI_M5"
+
 endif
 
 if MESON_G12B
@@ -1853,6 +1856,8 @@ source "board/amlogic/g12a_u200_v1/Kconfig"
 source "board/amlogic/g12b_w400_v1/Kconfig"
 
 source "board/amlogic/sm1_ac200_v1/Kconfig"
+
+source "board/amlogic/sm1_bananapi_m5/Kconfig"
 
 source "board/amlogic/p1_skt/Kconfig"
 
