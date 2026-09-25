@@ -31,6 +31,7 @@
 #include <phy.h>
 #include <linux/mtd/partitions.h>
 #include <linux/sizes.h>
+#include <emmc_partitions.h>	/* DTB_SIZE */
 #include <asm-generic/gpio.h>
 #include <dm.h>
 #include <asm/armv8/mmu.h>
@@ -433,19 +434,24 @@ int board_late_init(void)
 						"defenv_reserv; setenv upgrade_step 2; saveenv; fi;", 0);
 		/*add board late init function here*/
 #ifndef DTB_BIND_KERNEL
-		int ret;
-		ret = run_command("store dtb read $dtb_mem_addr", 1);
-        if (ret) {
-				printf("%s(): [store dtb read $dtb_mem_addr] fail\n", __func__);
-#ifdef CONFIG_DTB_MEM_ADDR
+		{
 				char cmd[64];
-				printf("load dtb to %x\n", CONFIG_DTB_MEM_ADDR);
-				sprintf(cmd, "store dtb read %x", CONFIG_DTB_MEM_ADDR);
+				int ret;
+
+				sprintf(cmd, "store rsv read dtb ${dtb_mem_addr} 0x%x",
+						DTB_SIZE);
 				ret = run_command(cmd, 1);
-                if (ret) {
-						printf("%s(): %s fail\n", __func__, cmd);
-				}
+				if (ret) {
+						printf("%s(): [%s] fail\n", __func__, cmd);
+#ifdef CONFIG_DTB_MEM_ADDR
+						printf("load dtb to %x\n", CONFIG_DTB_MEM_ADDR);
+						sprintf(cmd, "store rsv read dtb 0x%x 0x%x",
+								CONFIG_DTB_MEM_ADDR, DTB_SIZE);
+						ret = run_command(cmd, 1);
+						if (ret)
+								printf("%s(): %s fail\n", __func__, cmd);
 #endif
+				}
 		}
 #elif defined(CONFIG_DTB_MEM_ADDR)
 		{
