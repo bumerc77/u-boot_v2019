@@ -425,7 +425,6 @@ int board_late_init(void)
 	}
 	run_command("mmc dev 1", 0);
 
-#if 0
 		//update env before anyone using it
 		run_command("get_rebootmode; echo reboot_mode=${reboot_mode}; "\
 						"if test ${reboot_mode} = factory_reset; then "\
@@ -466,7 +465,7 @@ int board_late_init(void)
 
 		/* load unifykey */
 		run_command("keyunify init 0x1234", 0);
-#endif
+
 /*open vpu  hdmitx and cvbs driver*/
 #ifdef CONFIG_AML_VPU
 	vpu_probe();

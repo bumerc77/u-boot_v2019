@@ -12,4 +12,10 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "sm1_bananapi_m5"
 
+config AML_REBOOT
+       bool "reboot cmd"
+       default y
+       help
+         support uboot reboot cmd
+
 endif
