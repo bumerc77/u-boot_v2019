@@ -357,7 +357,9 @@ static int initr_manual_reloc_cmdtable(void)
 #ifdef CONFIG_AML_STORAGE
 static int initr_storage(void)
 {
+#if !defined(CONFIG_MESON_G12A) && !defined(CONFIG_MESON_G12B)
 	run_command("gpio set GPIOB_12", 0);
+#endif
 	store_init(0);
 	return 0;
 }
