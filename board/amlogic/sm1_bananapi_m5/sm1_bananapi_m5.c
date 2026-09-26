@@ -578,7 +578,8 @@ int usb_get_update_result(void)
 
 phys_size_t get_effective_memsize(void)
 {
-	phys_size_t ddr_size = (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4);
+	phys_size_t ddr_size = ((phys_size_t)((readl(AO_SEC_GP_CFG0) >> 16)
+					     & 0xfff0)) << 20;
 
 	if (ddr_size > 0xE0000000UL)
 		ddr_size = 0xE0000000UL;
