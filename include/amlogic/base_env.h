@@ -235,9 +235,9 @@
 		"fi;fi;"\
 		"\0"\
 	"load_bmp_logo_base="\
-		"if rdext4pic ${board_logo_part} $loadaddr; then bmp display $logoLoadAddr; " \
-		"else if imgread pic logo bootup $loadaddr; then "\
-			"bmp display $bootup_offset; fi; fi;" \
+		"if rdext4pic ${board_logo_part} ${loadaddr}; then bmp display ${logoLoadAddr}; " \
+		"else if imgread pic logo bootup ${loadaddr}; then "\
+			"bmp display ${bootup_offset}; fi; fi;" \
 		"\0"\
 	"init_display_base="\
 		"get_rebootmode;"\

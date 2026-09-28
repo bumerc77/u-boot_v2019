@@ -99,7 +99,7 @@
         "loadaddr=3080000\0"\
         "panel_type=lcd_1\0" \
         "outputmode=1080p60hz\0" \
-	"hdmimode=none\0" \
+        "hdmimode=none\0" \
         "cvbsmode=576cvbs\0" \
         "display_width=1920\0" \
         "display_height=1080\0" \
@@ -151,7 +151,7 @@
         "storeargs="\
             "get_bootloaderversion;" \
             "setenv bootargs ${initargs} ${fs_type} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} vout=${outputmode},enable panel_type=${panel_type} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
-	"setenv bootargs ${bootargs} androidboot.bootloader=${bootloader_version} androidboot.hardware=amlogic;"\
+            "setenv bootargs ${bootargs} androidboot.bootloader=${bootloader_version} androidboot.hardware=amlogic;"\
             "run cmdline_keys;"\
             "\0"\
         "switch_bootmode="\
@@ -259,7 +259,7 @@
         "recovery_from_flash="\
             "echo active_slot: ${active_slot};"\
             "if test ${active_slot} = normal; then "\
-                "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part={recovery_part} recovery_offset={recovery_offset};"\
+                "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part=${recovery_part} recovery_offset=${recovery_offset};"\
                 "if imgread kernel ${recovery_part} ${loadaddr} ${recovery_offset}; then bootm ${loadaddr}; fi;"\
             "else "\
                 "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part=${boot_part} recovery_offset=${recovery_offset};"\
@@ -282,18 +282,18 @@
             "else "\
                 "setenv reboot_mode_android ""normal"";"\
                 "run storeargs;"\
-                "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output ${outputmode};vpp hdrpkt;"\
+                "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;osd open;osd clear;imgread pic logo bootup ${loadaddr};bmp display ${bootup_offset};bmp scale;vout output ${outputmode};vpp hdrpkt;"\
             "fi;fi;"\
             "\0"\
         "cmdline_keys="\
             "if keyman init 0x1234; then "\
-				"if keyman read usid ${loadaddr} str; then "\
-					"setenv bootargs ${bootargs} androidboot.serialno=${usid};"\
-					"setenv serial ${usid}; setenv serial# ${usid};"\
-				"else "\
-					"setenv bootargs ${bootargs} androidboot.serialno=u200${cpu_id};"\
-					"setenv serial u200${cpu_id}; setenv serial# u200${cpu_id};"\
-				"fi;"\
+                "if keyman read usid ${loadaddr} str; then "\
+                    "setenv bootargs ${bootargs} androidboot.serialno=${usid};"\
+                    "setenv serial ${usid}; setenv serial ${usid};"\
+                "else "\
+                    "setenv bootargs ${bootargs} androidboot.serialno=u200${cpu_id};"\
+                    "setenv serial u200${cpu_id}; setenv serial u200${cpu_id};"\
+                "fi;"\
                 "if keyman read mac ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} mac=${mac} androidboot.mac=${mac};"\
                 "fi;"\
@@ -325,7 +325,7 @@
                 "echo M5: no wifi; keyman write dtbo str 0; "\
             "else "\
                 "echo M5: has wifi; keyman write dtbo str 1; "\
-            "fi;fi;"\
+            "fi;"\
             "\0"\
 	"irremote_update="\
 		"if irkey 2500000 0xe31cfb04 0xb748fb04; then "\
@@ -333,7 +333,7 @@
 		"if itest ${irkey_value} == 0xe31cfb04; then " \
 			"run update;" \
 		"else if itest ${irkey_value} == 0xb748fb04; then " \
-			"run update;\n" \
+			"run update;" \
 			"fi;fi;" \
 		"fi;\0" \
 
@@ -635,4 +635,3 @@
 
 #define CONFIG_AML_KASLR_SEED
 #endif
-

@@ -245,7 +245,7 @@
         "recovery_from_flash="\
             "echo active_slot: ${active_slot};"\
             "if test ${active_slot} = normal; then "\
-                "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part={recovery_part} recovery_offset={recovery_offset};"\
+                "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part=${recovery_part} recovery_offset=${recovery_offset};"\
                 "if imgread kernel ${recovery_part} ${loadaddr} ${recovery_offset}; then bootm ${loadaddr}; fi;"\
             "else "\
                 "setenv bootargs ${bootargs} aml_dt=${aml_dt} recovery_part=${boot_part} recovery_offset=${recovery_offset};"\
@@ -274,10 +274,10 @@
             "if keyman init 0x1234; then "\
 				"if keyman read usid ${loadaddr} str; then "\
 					"setenv bootargs ${bootargs} androidboot.serialno=${usid};"\
-					"setenv serial ${usid}; setenv serial# ${usid};"\
+					"setenv serial ${usid}; setenv serial ${usid};"\
 				"else "\
 					"setenv bootargs ${bootargs} androidboot.serialno=w400${cpu_id};"\
-					"setenv serial w400${cpu_id}; setenv serial# w400${cpu_id};"\
+					"setenv serial w400${cpu_id}; setenv serial w400${cpu_id};"\
 				"fi;"\
                 "if keyman read mac ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} mac=${mac} androidboot.mac=${mac};"\
@@ -307,7 +307,7 @@
         "if itest ${irkey_value} == 0xe31cfb04; then " \
             "run update;" \
         "else if itest ${irkey_value} == 0xb748fb04; then " \
-            "run update;\n" \
+            "run update;" \
             "fi;fi;" \
         "fi;\0" \
 

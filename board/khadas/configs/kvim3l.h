@@ -344,7 +344,7 @@
             "else "\
                 "setenv reboot_mode_android ""normal"";"\
                 "if test ${lcd_exist} = 0; then "\
-                    "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;dovi process;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output ${outputmode};vpp hdrpkt;"\
+                    "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;dovi process;osd open;osd clear;imgread pic logo bootup ${loadaddr};bmp display ${bootup_offset};bmp scale;vout output ${outputmode};vpp hdrpkt;"\
                 "else "\
                     "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;osd dual_logo;vpp hdrpkt;"\
                 "fi;"\
@@ -473,7 +473,7 @@
 		"if itest ${irkey_value} == 0xe31cfb04; then " \
 			"run update;" \
 		"else if itest ${irkey_value} == 0xb748fb04; then " \
-			"run update;\n" \
+			"run update;" \
 			"fi;fi;" \
 		"fi;\0" \
 
@@ -510,17 +510,17 @@
 #define CONFIG_DUAL_LOGO \
     "if test ${khadas_mipi_id} = 2; then "\
         "setenv outputmode ${ts101_output};setenv display_layer osd0;"\
-        "vout prepare $outputmode;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output $outputmode;"\
+        "vout prepare ${outputmode};osd open;osd clear;imgread pic logo bootup ${loadaddr};bmp display ${bootup_offset};bmp scale;vout output ${outputmode};"\
         "setenv fb_width 1790; setenv fb_height 1050;"\
         "setenv display_width 1920;setenv display_height 1200;"\
     "else "\
         "setenv outputmode ${ts050_output};setenv display_layer osd0;"\
-        "vout prepare $outputmode;osd open;osd clear;imgread pic logo bootup_rotate_secondary $loadaddr;bmp display $bootup_rotate_secondary_offset;bmp scale;vout output $outputmode;"\
+        "vout prepare ${outputmode};osd open;osd clear;imgread pic logo bootup_rotate_secondary ${loadaddr};bmp display ${bootup_rotate_secondary_offset};bmp scale;vout output ${outputmode};"\
         "setenv fb_width 1080;setenv fb_height 1920;"\
         "setenv display_width 1080;setenv display_height 1920;"\
     "fi;"\
-    "setenv outputmode2 $hdmimode;setenv display_layer viu2_osd0;"\
-    "vout2 prepare $outputmode2;vout2 output $outputmode2;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;"\
+    "setenv outputmode2 ${hdmimode};setenv display_layer viu2_osd0;"\
+    "vout2 prepare ${outputmode2};vout2 output ${outputmode2};osd open;osd clear;imgread pic logo bootup ${loadaddr};bmp display ${bootup_offset};bmp scale;"\
     "\0"\
 
 /* buffer rotate for portrait screen */
@@ -530,12 +530,12 @@
         "setenv outputmode ${ts101_output};"\
         "setenv fb_width 1920; setenv fb_height 1200;"\
         "setenv display_width 1920;setenv display_height 1200;"\
-        "vout prepare $outputmode;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output $outputmode;"\
+        "vout prepare ${outputmode};osd open;osd clear;imgread pic logo bootup ${loadaddr};bmp display ${bootup_offset};bmp scale;vout output ${outputmode};"\
     "else "\
         "setenv outputmode ${ts050_output};"\
         "setenv fb_width 1080; setenv fb_height 1920;"\
         "setenv display_width 1080;setenv display_height 1920;"\
-        "vout prepare $outputmode;osd open;osd clear;imgread pic logo bootup_rotate $loadaddr;bmp display $bootup_rotate_offset;bmp scale;vout output $outputmode;"\
+        "vout prepare ${outputmode};osd open;osd clear;imgread pic logo bootup_rotate ${loadaddr};bmp display ${bootup_rotate_offset};bmp scale;vout output ${outputmode};"\
     "fi;"\
     "\0"\
 
