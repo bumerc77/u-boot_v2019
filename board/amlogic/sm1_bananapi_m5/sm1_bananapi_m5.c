@@ -41,12 +41,6 @@ DECLARE_GLOBAL_DATA_PTR;
 //new static eth setup
 struct eth_board_socket*  eth_board_skt;
 
-void sys_led_init(void)
-{
-	//set GPIOAO_11 drive strength
-	setbits_le32(AO_PAD_DS_A,(3<<22)); //GPIOAO_11 set drive strength "3"
-}
-
 int serial_set_pin_port(unsigned long port_base)
 {
     //UART in "Always On Module"
@@ -349,15 +343,11 @@ int board_init(void)
 
 	pinctrl_devices_active(PIN_CONTROLLER_NUM);
 #if 0
-	sys_led_init();
-#if 0
 	aml_pwm_cal_init(0);
-#endif//
+#endif
 #ifdef CONFIG_AML_NAND
 	extern int amlnf_init(unsigned char flag);
 	amlnf_init(0);
-#endif
-
 #endif
 	return 0;
 }
