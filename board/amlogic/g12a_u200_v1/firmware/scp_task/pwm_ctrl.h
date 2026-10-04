@@ -6,6 +6,9 @@
 #ifndef __PWM_CTRL_H__
 #define __PWM_CTRL_H__
 
+void backuremote_register(void);
+void resume_remote_register(void);
+
 static int pwm_voltage_table_ee[][2] = {
 	{ 0x1c0000,  681},
 	{ 0x1b0001,  691},

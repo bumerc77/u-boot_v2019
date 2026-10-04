@@ -205,7 +205,6 @@ unsigned bakeuAO_IR_DEC_LDR_REPEAT;
 **       IR Remote hardware decoder mode at 32kHZ on ARC.
 **
 ********************************************************************/
-#if 1
 void backuremote_register(void)
 {
 	backuAO_RTI_PIN_MUX_REG = readl(AO_RTI_PIN_MUX_REG);
@@ -251,7 +250,6 @@ void init_custom_trigger(void)
 {
 	ir_remote_init_32k_mode();
 }
-#endif
 
 static unsigned int kk[] = {
 	AML_IR_REMOTE_POWER_UP_KEY_VAL1,
@@ -267,11 +265,11 @@ static unsigned int kk[] = {
 
 static int init_remote(void)
 {
-	return 0;
 	uart_put_hex(readl(AO_IR_DEC_STATUS), 32);
 	uart_put_hex(readl(AO_IR_DEC_FRAME), 32);
 	init_custom_trigger();
-	//return 0;
+
+	return 0;
 }
 
 /*can be called in pwr_ctrl.c*/
